@@ -8,9 +8,6 @@ const SEGREDO = 'euvoupracasa';
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-//app.use(express.json());
-//app.use(express.urlencoded({extended: true}));
-
 app.get('/',(req, resp) => {
     resp.send({'message':'ok'});
 });
@@ -54,8 +51,7 @@ app.post('/tasks', (req, resp) => {
         isPriority: body.isPriority
     };
     tasks.push(task);
-    resp.status(201);
-    resp.send(task);
+    resp.status(201).send(task);
 });
 
 //Lista todas as tarefas
@@ -67,11 +63,9 @@ app.get('/tasks/:taskId', (req, resp) => {
     const task = tasks.find(t => t.id == req.params.taskId);
 
     if(task){
-        resp.status(200);
-        resp.send(task);
+        resp.status(200).send(task);
     } else {
-        resp.status(404);
-        resp.send();
+        resp.status(404).send();
     }
 });
 
@@ -86,8 +80,7 @@ app.put('/tasks/:taskId', (req, resp) => {
         task.isPriority = body.isPriority;
         resp.send(task);
     } else {
-        resp.status(404);
-        resp.send();
+        resp.status(404).send();
     }
 });
 
