@@ -3,10 +3,27 @@ const app = express();
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
+
 const SEGREDO = 'euvoupracasa';
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+function cobrarTokenJWT(req, resp, next){
+    if(req.url == '/' || req.url == '/login'){
+        next();
+    }
+
+    var token = req.headers['x-access-token'];
+    try{
+        var decodificado = jwt.verify(token, SEGREDO);
+        next();
+    } catch (e){
+        resp. status(401).send({message: 'token is not valid'});
+    }
+}
+
+app.use(cobrarTokenJWT);
 
 app.get('/',(req, resp) => {
     resp.send({'message':'ok'});
@@ -21,22 +38,6 @@ app.post('/login', (req, resp) => {
         resp.status(401).send({message: 'Error in username or password'});
     }
 });
-
-function cobrarTokenJWT(req, resp, next){
-    if(req.url == '/login'){
-        next();
-    }
-
-    var token = req.headers['x-acess-token'];
-    try{
-        var decodificado = jwt.verify(token, SEGREDO);
-        next();
-    } catch (e){
-        resp.status(500).send({message: 'token invalido'});
-    }
-}
-
-app.use(cobrarTokenJWT);
 
 var tasks = [];
 
