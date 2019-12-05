@@ -14,11 +14,11 @@ app.get('/',(req, resp) => {
 
 app.post('/login', (req, resp) => {
     var body = req.body;
-    if(body.username == 'usuario' && body.password == 'teste123'){
+    if(body.username == 'usuario' && body.password == '123456'){
         var token = jwt.sign({username: 'usuario', role: 'admin'}, SEGREDO, {expiresIn: '1h'});
-        resp.send({auth: true, token});
+        resp.status(200).send({token});
     }else{
-        resp.status(403).send({auth: false, message: 'usuario invalido'});
+        resp.status(401).send({message: 'Error in username or password'});
     }
 });
 
@@ -56,7 +56,7 @@ app.post('/tasks', (req, resp) => {
 
 //Lista todas as tarefas
 app.get('/tasks', (req, resp) => {
-    resp.send(tasks);
+    resp.status(200).send(tasks);
 });
 
 app.get('/tasks/:taskId', (req, resp) => {    
@@ -78,7 +78,7 @@ app.put('/tasks/:taskId', (req, resp) => {
         task.description = body.description;
         task.isDone = body.isDone;
         task.isPriority = body.isPriority;
-        resp.send(task);
+        resp.status(200).send(task);
     } else {
         resp.status(404).send();
     }
